@@ -1,0 +1,6 @@
+.ipynb_checkpoints/
+build/
+pycocotools.egg-info/
+pycocotools/__pycache__/
+pycocotools/_mask.cpython-36m-darwin.so
+
