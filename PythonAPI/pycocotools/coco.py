@@ -97,6 +97,11 @@ class COCO:
                 imgToAnns[ann['image_id']].append(ann)
                 anns[ann['id']] = ann
 
+        if 'parts' in self.dataset:
+            for ann in self.dataset['parts']:
+                imgToAnns[ann['image_id']].append(ann)
+                anns[ann['id']] = ann
+
         if 'images' in self.dataset:
             for img in self.dataset['images']:
                 imgs[img['id']] = img
@@ -107,6 +112,10 @@ class COCO:
 
         if 'annotations' in self.dataset and 'categories' in self.dataset:
             for ann in self.dataset['annotations']:
+                catToImgs[ann['category_id']].append(ann['image_id'])
+
+        if 'parts' in self.dataset and 'categories' in self.dataset:
+            for ann in self.dataset['parts']:
                 catToImgs[ann['category_id']].append(ann['image_id'])
 
         print('index created!')
@@ -139,13 +148,13 @@ class COCO:
         catIds = catIds if _isArrayLike(catIds) else [catIds]
 
         if len(imgIds) == len(catIds) == len(areaRng) == 0:
-            anns = self.dataset['annotations']
+            anns = self.dataset['annotations'] + self.dataset['parts']
         else:
             if not len(imgIds) == 0:
                 lists = [self.imgToAnns[imgId] for imgId in imgIds if imgId in self.imgToAnns]
                 anns = list(itertools.chain.from_iterable(lists))
             else:
-                anns = self.dataset['annotations']
+                anns = self.dataset['annotations'] + self.dataset['parts']
             anns = anns if len(catIds)  == 0 else [ann for ann in anns if ann['category_id'] in catIds]
             anns = anns if len(areaRng) == 0 else [ann for ann in anns if ann['area'] > areaRng[0] and ann['area'] < areaRng[1]]
         if not iscrowd == None:
